@@ -356,14 +356,17 @@ function messagePickupRequest(pickup) {
   text = "Hey " + pickuper + ",/n" + traveller + " would love to be picked up by you from " + pickup.airportArrival +
     " at " + pickup.estimatedArrival + " (" + pickup.timeStatus + "). Don't worry we will inform you if " + traveller +
     "s flight is delayed. Please confirm that you will pick " +
-    traveller + " up! /n http://pickmeapp.herokuapp.com/api/confirm/" + pickup.uid +
-    "  http://pickmeapp.herokuapp.com/api/deny/" + pickup.uid + "";
+    traveller + " up! He has a personal message for you: " + pickup.message +
+    " /n/n http://pickmeapp.herokuapp.com/api/confirm/" + pickup.uid +
+    "/n/n  http://pickmeapp.herokuapp.com/api/deny/" + pickup.uid + "";
+
   html = "<p>Hey " + pickuper + ",<br /><br />" + traveller + " would love to be picked up by you from " + pickup.airportArrival +
     " at " + pickup.estimatedArrival + " (" + pickup.timeStatus + "). Don't worry we will inform you if " + traveller +
     "s flight is delayed. Please confirm that you will pick " +
-    traveller + " up! </p> <p> <a href='http://pickmeapp.herokuapp.com/api/confirm/" + pickup.uid +
+    traveller + " up! He has a personal message for you: " + pickup.message +
+    " </p> <p> <a href='http://pickmeapp.herokuapp.com/api/confirm/" + pickup.uid +
     "'>Yes, I will Pick-Him-App</a><br /> <a href='http://pickmeapp.herokuapp.com/api/deny/" + pickup.uid +
-    "'>No, I won't Pick-Him-App</a></p>";
+    "'><br />No, I won't Pick-Him-App</a></p>";
 
 
   sendMessage(email, 'New Pick-Me-App request', text, html);
