@@ -261,7 +261,7 @@ router.route('/confirm/:uid')
       log(pickup, 'debug', '[API]');
       pickup.confirm = true;
       pickup.save();
-      res.status(200).json(pickup);
+      res.render('confirm.jade', { pickup: pickup });
     }
   });
 })
