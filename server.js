@@ -357,12 +357,12 @@ function messagePickupRequest(pickup) {
     " at " + pickup.estimatedArrival + " (" + pickup.timeStatus + "). Don't worry we will inform you if " + traveller +
     "s flight is delayed. Please confirm that you will pick " +
     traveller + " up! /n http://pickmeapp.herokuapp.com/api/confirm/" + pickup.uid +
-    "  http://pickmeapp.herokuapp.com/api/cancel/" + pickup.uid + "";
+    "  http://pickmeapp.herokuapp.com/api/deny/" + pickup.uid + "";
   html = "<p>Hey " + pickuper + ",<br /><br />" + traveller + " would love to be picked up by you from " + pickup.airportArrival +
     " at " + pickup.estimatedArrival + " (" + pickup.timeStatus + "). Don't worry we will inform you if " + traveller +
     "s flight is delayed. Please confirm that you will pick " +
     traveller + " up! </p> <p> <a href='http://pickmeapp.herokuapp.com/api/confirm/" + pickup.uid +
-    "'>Yes, I will Pick-Him-App</a><br /> <a href='http://pickmeapp.herokuapp.com/api/cancel/" + pickup.uid +
+    "'>Yes, I will Pick-Him-App</a><br /> <a href='http://pickmeapp.herokuapp.com/api/deny/" + pickup.uid +
     "'>No, I won't Pick-Him-App</a></p>";
 
 
