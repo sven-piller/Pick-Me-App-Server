@@ -297,6 +297,7 @@ router.route('/pickup')
         timeStatus: timeStatus,
         uid: pickup.uid
       });
+      res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
       messagePickupRequest(pickup);
     });
   });
