@@ -63,7 +63,12 @@ function log(message, level, indicator) {
   }
   logger(message, level, indicator);
 }
-
+//CORS middleware
+var allowCrossDomain = function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  next();
+}
 /**
  * string for server URL
 
@@ -208,6 +213,8 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(methodOverride());
 app.use(cookieParser());
+
+app.use(allowCrossDomain);
 //app.use(express.static(__dirname + '/'));
 //app.use(express.static(__dirname + '/doc'));
 //app.use(express.static(__dirname + '/public'));
