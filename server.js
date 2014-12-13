@@ -359,17 +359,12 @@ app.use('/', routerPublic);
 var routerDoc = express.Router();
 
 // home page route (http://localhost:8080)
-routerPublic.get('/doc', function(req, res) {
-  res.send('im the home page!');
-});
-
-// about page route (http://localhost:8080/about)
-routerPublic.get('/about', function(req, res) {
-  res.send('im the about page!');
+routerDoc.get('/doc', function(req, res) {
+  res.send('im the doc page!');
 });
 
 // apply the routes to our application
-app.use('/', routerPublic);
+app.use('/', routerDoc);
 
 
 
