@@ -28,6 +28,7 @@ var logger = require('./lib/libLogger').log;
 var helper = require('./lib/libHelper');
 // database models
 var Pickup = require('./app/models/pickup');
+var Location = require('./app/models/location');
 
 /**
  * string with version number
@@ -294,6 +295,49 @@ router.route('/deny/:uid')
     }
   });
 })
+
+router.route('/location/:uid')
+
+// get the flight with that id
+.get(function(req, res) {
+  Location.findById(req.params.uid, function(err, location) {
+    if (err) {
+      log(err, 'error', '[API]');
+      res.send(err);
+    } else {
+      log(location, 'debug', '[API]');
+      res.status(200).json({
+        location: location
+      });
+    }
+  });
+});
+
+router.route('/location')
+
+// get the flight with that id
+.post(function(req, res) {
+  log(JSON.stringify(req.body));
+  var location = new Location();
+  location.level = req.body.level;
+  location.letter = req.body.letter;
+  location.area = req.body.area;
+  location.number = req.body.number;
+  location.alt = req.body.alt;
+  location.long = req.body.long;
+  //  location.pickup = Pickup.findById(req.body.pickupId);
+  //  location.ibeacon = req.body.ibeacon
+
+  // save the bear and check for errors
+  location.save(function(err) {
+    if (err)
+      res.send(err);
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.status(200).json({
+      location: location
+    });
+  });
+});
 
 // on routes that end in /pickup
 // ----------------------------------------------------
