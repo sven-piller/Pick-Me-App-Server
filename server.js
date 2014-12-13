@@ -104,6 +104,65 @@ db.once('open', function() {
 });
 mongoose.connect(databaseUrl);
 
+
+
+// Abfrage an LH_API
+
+var querystring = require('querystring');
+var https = require('https');
+
+var host = 'api.lufthansa.com';
+var apiVersion = 'v1';
+var username = 'pickmeApp';
+var password = 'pickme123';
+var apiKey = 'jqxbqfdtamqay85qddzp98m6';
+
+function performRequest(endpoint, method, data, success) {
+  var dataString = JSON.stringify(data);
+  var headers = {};
+
+  if (method == 'GET') {
+    endpoint += '?' + querystring.stringify(data);
+  }
+  else {
+    headers = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Content-Length': dataString.length
+    };
+  }
+  logger(endpoint, 'debug', '[API Call]');
+
+  var options = {
+    host: host,
+    path: endpoint,
+    method: method,
+    headers: headers
+  };
+
+  logger(options, 'debug', '[API Call]');
+
+  var req = https.request(options, function(res) {
+    res.setEncoding('utf-8');
+
+    var responseString = '';
+
+    res.on('data', function(data) {
+      responseString += data;
+    });
+
+    res.on('end', function() {
+      logger(JSON.stringify(responseString), 'info', '[API Call]');
+      var responseObject = JSON.parse(responseString);
+      success(responseObject);
+    });
+  });
+
+  req.write(dataString);
+  req.end();
+}
+
+
 // API
 var app = express();
 app.set('port', port);
@@ -151,16 +210,40 @@ router.route('/pickup')
     if (err)
       res.send(err);
 
-    res.json({
-      message: 'Pickup request created!',
-      id: pickup._id,
-      status: 'OK',
-      link: serverUrl + '/show/' + pickup._id
+      fetchFlightInformation(pickup, function getFlightInformation(infos) {
+        var arrival = infos.FlightStatusResource.FlightGroup.Flight.Arrival;
+        var aiportArrival = arrival.AirportCode.$;
+        var scheduleArrival = arrival.ScheduledTimeUTC.DateTime.$;
+        var estimatedArrival = arrival.RevisedTimeUTC.DateTime.$;
+        var flightStatus = infos.FlightStatusResource.FlightGroup.Flight.FlightStatus[0].Definition.$;
+        var timeStatus = infos.FlightStatusResource.FlightGroup.Flight.TimeStatus[0].Definition.$;
+        res.json({
+          message: 'Pickup request created!',
+          id: pickup._id,
+          status: 'OK',
+          link: serverUrl + '/show/' + pickup._id,
+          aiportArrival: aiportArrival,
+          scheduleArrival: scheduleArrival,
+          estimatedArrival: estimatedArrival,
+          flightStatus: flightStatus,
+          timeStatus: timeStatus
+        });
     });
   });
-
 });
 
+function fetchFlightInformation(pickup, cb) {
+  // https://api.lufthansa.com/v1/operations/flightstatus/LH400/2014-12-13?api_key=jqxbqfdtamqay85qddzp98m6
+  var dateString = helper.getDateString();
+  var url = '/v1/operations/flightstatus/' + pickup.carrier + pickup.flightnumber + '/' + dateString;
+  logger(url);
+  performRequest(url, 'GET', {
+    api_key: apiKey
+  }, function(data) {
+    //logger(data);
+    cb(data);
+  });
+}
 
 // REGISTER OUR ROUTES -------------------------------
 // all of our routes will be prefixed with /api
