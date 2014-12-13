@@ -13,7 +13,8 @@ var PickupSchema = new mongoose.Schema({
   estimatedArrival: String,
   flightStatus: String,
   timeStatus: String,
-  uid: String
+  uid: String,
+  confirm: String
 });
 
 module.exports = mongoose.model('Pickup', PickupSchema);

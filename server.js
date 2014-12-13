@@ -249,6 +249,40 @@ router.route('/show/:uid')
   });
 })
 
+router.route('/confirm/:uid')
+
+// get the flight with that id
+.get(function(req, res) {
+  Pickup.findOne({ 'uid': req.params.uid }, function(err, pickup) {
+    if (err) {
+      log(err, 'error', '[API]');
+      res.send(err);
+    } else {
+      log(pickup, 'debug', '[API]');
+      pickup.confirm = true;
+      pickup.save();
+      res.status(200).json(pickup);
+    }
+  });
+})
+
+router.route('/cancel/:uid')
+
+// get the flight with that id
+.get(function(req, res) {
+  Pickup.findOne({ 'uid': req.params.uid }, function(err, pickup) {
+    if (err) {
+      log(err, 'error', '[API]');
+      res.send(err);
+    } else {
+      log(pickup, 'debug', '[API]');
+      pickup.confirm = false;
+      pickup.save();
+      res.status(200).json(pickup);
+    }
+  });
+})
+
 // on routes that end in /pickup
 // ----------------------------------------------------
 router.route('/pickup')
@@ -285,6 +319,7 @@ router.route('/pickup')
       pickup.timeStatus = timeStatus;
       pickup.save();
 
+      res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
       res.status(200).json({
         message: 'Pickup request created!',
         id: pickup._id,
@@ -297,7 +332,6 @@ router.route('/pickup')
         timeStatus: timeStatus,
         uid: pickup.uid
       });
-      res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
       messagePickupRequest(pickup);
     });
   });
@@ -310,13 +344,13 @@ function messagePickupRequest(pickup) {
   text = "Hey " + pickuper + ",/n" + traveller + " would love to be picked up by you from " + pickup.airportArrival +
     " at " + pickup.estimatedArrival + " (" + pickup.timeStatus + "). Don't worry we will inform you if " + traveller +
     "s flight is delayed. Please confirm that you will pick " +
-    traveller + " up! /n http://pickmeapp.herokuapp.com/confirm/" + pickup._id +
-    "  http://pickmeapp.herokuapp.com/cancel/" + pickup._id + "";
+    traveller + " up! /n http://pickmeapp.herokuapp.com/confirm/" + pickup.uid +
+    "  http://pickmeapp.herokuapp.com/cancel/" + pickup.uid + "";
   html = "<p>Hey " + pickuper + ",<br /><br />" + traveller + " would love to be picked up by you from " + pickup.airportArrival +
     " at " + pickup.estimatedArrival + " (" + pickup.timeStatus + "). Don't worry we will inform you if " + traveller +
     "s flight is delayed. Please confirm that you will pick " +
-    traveller + " up! </p> <p> <a href='http://pickmeapp.herokuapp.com/confirm/" + pickup._id +
-    "'>Yes, I will Pick-Him-App</a><br /> <a href='http://pickmeapp.herokuapp.com/cancel/" + pickup._id +
+    traveller + " up! </p> <p> <a href='http://pickmeapp.herokuapp.com/confirm/" + pickup.uid +
+    "'>Yes, I will Pick-Him-App</a><br /> <a href='http://pickmeapp.herokuapp.com/cancel/" + pickup.uid +
     "'>No, I won't Pick-Him-App</a></p>";
 
 
@@ -349,8 +383,16 @@ routerPublic.get('/', function(req, res) {
 });
 
 // about page route (http://localhost:8080/about)
-routerPublic.get('/about', function(req, res) {
-  res.send('im the about page!');
+routerPublic.get('/show', function(req, res) {
+  Pickup.findOne(null, function(err, pickup) {
+    if (err) {
+      log(err, 'error', '[API]');
+      res.send(err);
+    } else {
+      log(pickup, 'debug', '[API]');
+      res.render('show.jade', { pickup: pickup });
+    }
+  });
 });
 
 // apply the routes to our application
