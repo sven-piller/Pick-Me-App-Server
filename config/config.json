@@ -7,5 +7,9 @@
     "host": "localhost",
     "port": "27017",
     "dbname": "pickmeapp"
+  },
+  "api": {
+    "host": "api.lufthansa.com",
+    "key": "jqxbqfdtamqay85qddzp98m6"
   }
 }

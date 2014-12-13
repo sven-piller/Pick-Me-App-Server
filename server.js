@@ -111,12 +111,6 @@ mongoose.connect(databaseUrl);
 var querystring = require('querystring');
 var https = require('https');
 
-var host = 'api.lufthansa.com';
-var apiVersion = 'v1';
-var username = 'pickmeApp';
-var password = 'pickme123';
-var apiKey = 'jqxbqfdtamqay85qddzp98m6';
-
 function performRequest(endpoint, method, data, success) {
   var dataString = JSON.stringify(data);
   var headers = {};
@@ -134,7 +128,7 @@ function performRequest(endpoint, method, data, success) {
   logger(endpoint, 'debug', '[API Call]');
 
   var options = {
-    host: host,
+    host: properties.api.host,
     path: endpoint,
     method: method,
     headers: headers
@@ -238,7 +232,7 @@ function fetchFlightInformation(pickup, cb) {
   var url = '/v1/operations/flightstatus/' + pickup.carrier + pickup.flightnumber + '/' + dateString;
   logger(url);
   performRequest(url, 'GET', {
-    api_key: apiKey
+    api_key: properties.api.key
   }, function(data) {
     //logger(data);
     cb(data);
