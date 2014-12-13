@@ -11,7 +11,7 @@ var LocationSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Pickup'
   },
-  ibeachon: String
+  ibeacon: String
 });
 
 module.exports = mongoose.model('Location', LocationSchema);
