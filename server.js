@@ -237,7 +237,7 @@ router.route('/show/:uid')
       res.send(err);
     } else {
       log(pickup, 'debug', '[API]');
-      res.json(pickup);
+      res.status(200).json(pickup);
     }
   });
 })
