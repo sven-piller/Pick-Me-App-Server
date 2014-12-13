@@ -210,6 +210,7 @@ app.use(methodOverride());
 app.use(cookieParser());
 //app.use(express.static(__dirname + '/'));
 //app.use(express.static(__dirname + '/doc'));
+//app.use(express.static(__dirname + '/public'));
 
 // ROUTES FOR OUR API
 // =============================================================================
@@ -226,6 +227,21 @@ router.get('/', function(req, res) {
   });
 });
 
+router.route('/show/:uid')
+
+// get the flight with that id
+.get(function(req, res) {
+  Pickup.findOne({ 'uid': req.params.uid }, function(err, pickup) {
+    if (err) {
+      log(err, 'error', '[API]');
+      res.send(err);
+    } else {
+      log(pickup, 'debug', '[API]');
+      res.json(pickup);
+    }
+  });
+})
+
 // on routes that end in /pickup
 // ----------------------------------------------------
 router.route('/pickup')
@@ -240,6 +256,7 @@ router.route('/pickup')
   pickup.phonePickuper = req.body.phone_pickuper;
   pickup.emailPickuper = req.body.email_pickuper;
   pickup.message = req.body.message;
+  pickup.uid = req.body.uid
 
   // save the bear and check for errors
   pickup.save(function(err) {
@@ -261,17 +278,18 @@ router.route('/pickup')
       pickup.timeStatus = timeStatus;
       pickup.save();
 
-      res.status(200).json({"data": {
+      res.status(200).json({
         message: 'Pickup request created!',
         id: pickup._id,
         status: 'OK',
-        link: serverUrl + '/show/' + pickup._id,
+        link: serverUrl + '/show/' + pickup.uid,
         airportArrival: airportArrival,
         scheduleArrival: scheduleArrival,
         estimatedArrival: estimatedArrival,
         flightStatus: flightStatus,
-        timeStatus: timeStatus
-      }});
+        timeStatus: timeStatus,
+        uid: pickup.uid
+      });
       messagePickupRequest(pickup);
     });
   });
@@ -314,6 +332,39 @@ function fetchFlightInformation(pickup, cb) {
 // REGISTER OUR ROUTES -------------------------------
 // all of our routes will be prefixed with /api
 app.use('/api', router);
+
+var routerPublic = express.Router();
+
+// home page route (http://localhost:8080)
+routerPublic.get('/', function(req, res) {
+  res.send('im the home page!');
+});
+
+// about page route (http://localhost:8080/about)
+routerPublic.get('/about', function(req, res) {
+  res.send('im the about page!');
+});
+
+// apply the routes to our application
+app.use('/', routerPublic);
+
+var routerDoc = express.Router();
+
+// home page route (http://localhost:8080)
+routerPublic.get('/doc', function(req, res) {
+  res.send('im the home page!');
+});
+
+// about page route (http://localhost:8080/about)
+routerPublic.get('/about', function(req, res) {
+  res.send('im the about page!');
+});
+
+// apply the routes to our application
+app.use('/', routerPublic);
+
+
+
 
 app.use(function(err, req, res, next) {
   console.error(err.stack);
