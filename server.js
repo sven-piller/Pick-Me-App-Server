@@ -83,7 +83,7 @@ var port = process.env.PORT || properties.server.port || 5000;
 log(process.env.NODE_ENV === 'production');
 if (process.env.NODE_ENV === 'production') {
   var serverUrl = 'http://' + properties.server.host + ':' + port;
-  databaseUrl = 'mongodb://test:test@ds033390.mongolab.com:33390/appatnight';
+  databaseUrl = 'mongodb://test:test@ds063180.mongolab.com:63180/pickmeapp';
 } else {
   var serverUrl = 'http://localhost:' + port;
   databaseUrl = 'mongodb://' + properties.db.host + ':' + properties.db.port + '/' + properties.db.dbname;
