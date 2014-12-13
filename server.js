@@ -248,7 +248,7 @@ router.route('/pickup')
 
     fetchFlightInformation(pickup, function getFlightInformation(infos) {
       var arrival = infos.FlightStatusResource.FlightGroup.Flight.Arrival;
-      var aiportArrival = arrival.AirportCode.$;
+      var airportArrival = arrival.AirportCode.$;
       var scheduleArrival = arrival.ScheduledTimeUTC.DateTime.$;
       var estimatedArrival = arrival.RevisedTimeUTC.DateTime.$;
       var flightStatus = infos.FlightStatusResource.FlightGroup.Flight.FlightStatus[0].Definition.$;
@@ -261,7 +261,7 @@ router.route('/pickup')
       pickup.timeStatus = timeStatus;
       pickup.save();
 
-      res.json({
+      res.status(200).json({
         message: 'Pickup request created!',
         id: pickup._id,
         status: 'OK',
