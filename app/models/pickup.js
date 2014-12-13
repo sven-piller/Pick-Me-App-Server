@@ -8,7 +8,7 @@ var PickupSchema = new mongoose.Schema({
   phonePickuper: String,
   emailPickuper: String,
   message: String,
-  aiportArrival: String,
+  airportArrival: String,
   scheduleArrival: String,
   estimatedArrival: String,
   flightStatus: String,

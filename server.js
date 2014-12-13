@@ -117,8 +117,7 @@ function performRequest(endpoint, method, data, success) {
 
   if (method == 'GET') {
     endpoint += '?' + querystring.stringify(data);
-  }
-  else {
+  } else {
     headers = {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
@@ -154,6 +153,49 @@ function performRequest(endpoint, method, data, success) {
 
   req.write(dataString);
   req.end();
+}
+
+
+// Emailversand
+var nodemailer = require('nodemailer');
+
+// create reusable transporter object using SMTP transport
+var transporter = nodemailer.createTransport({
+  service: 'Gmail',
+  auth: {
+    user: 'pick0me0app@gmail.com',
+    pass: '123456Ab!'
+  }
+});
+
+// NB! No need to recreate the transporter object. You can use
+// the same transporter object for all e-mails
+
+// setup e-mail data with unicode symbols
+var defaultMailOptions = {
+  from: 'Pick-Me-App ✔ <donotreply@example.com>', // sender address
+  to: null, // list of receivers
+  subject: 'New Pick-Me-App request', // Subject line
+  text: 'Hello world ✔', // plaintext body
+  html: '<b>Hello world ✔</b>' // html body
+};
+
+function sendMessage(receiver, subject, text, html, callback) {
+  // send mail with defined transport object
+  mailOptions = defaultMailOptions;
+  mailOptions.to = receiver;
+  mailOptions.subject = subject;
+  mailOptions.text = text;
+  mailOptions.html = html;
+  transporter.sendMail(mailOptions, function(error, info) {
+    if (error) {
+      console.log(error);
+      if (callback) callback();
+    } else {
+      console.log('Message sent: ' + info.response);
+      if (callback) callback();
+    }
+  });
 }
 
 
@@ -204,35 +246,57 @@ router.route('/pickup')
     if (err)
       res.send(err);
 
-      fetchFlightInformation(pickup, function getFlightInformation(infos) {
-        var arrival = infos.FlightStatusResource.FlightGroup.Flight.Arrival;
-        var aiportArrival = arrival.AirportCode.$;
-        var scheduleArrival = arrival.ScheduledTimeUTC.DateTime.$;
-        var estimatedArrival = arrival.RevisedTimeUTC.DateTime.$;
-        var flightStatus = infos.FlightStatusResource.FlightGroup.Flight.FlightStatus[0].Definition.$;
-        var timeStatus = infos.FlightStatusResource.FlightGroup.Flight.TimeStatus[0].Definition.$;
+    fetchFlightInformation(pickup, function getFlightInformation(infos) {
+      var arrival = infos.FlightStatusResource.FlightGroup.Flight.Arrival;
+      var aiportArrival = arrival.AirportCode.$;
+      var scheduleArrival = arrival.ScheduledTimeUTC.DateTime.$;
+      var estimatedArrival = arrival.RevisedTimeUTC.DateTime.$;
+      var flightStatus = infos.FlightStatusResource.FlightGroup.Flight.FlightStatus[0].Definition.$;
+      var timeStatus = infos.FlightStatusResource.FlightGroup.Flight.TimeStatus[0].Definition.$;
 
-        pickup.aiportArrival = aiportArrival;
-        pickup.scheduleArrival = scheduleArrival;
-        pickup.estimatedArrival = estimatedArrival;
-        pickup.flightStatus = flightStatus;
-        pickup.timeStatus = timeStatus;
-        pickup.save();
+      pickup.airportArrival = airportArrival;
+      pickup.scheduleArrival = scheduleArrival;
+      pickup.estimatedArrival = estimatedArrival;
+      pickup.flightStatus = flightStatus;
+      pickup.timeStatus = timeStatus;
+      pickup.save();
 
-        res.json({
-          message: 'Pickup request created!',
-          id: pickup._id,
-          status: 'OK',
-          link: serverUrl + '/show/' + pickup._id,
-          aiportArrival: aiportArrival,
-          scheduleArrival: scheduleArrival,
-          estimatedArrival: estimatedArrival,
-          flightStatus: flightStatus,
-          timeStatus: timeStatus
-        });
+      res.json({
+        message: 'Pickup request created!',
+        id: pickup._id,
+        status: 'OK',
+        link: serverUrl + '/show/' + pickup._id,
+        airportArrival: airportArrival,
+        scheduleArrival: scheduleArrival,
+        estimatedArrival: estimatedArrival,
+        flightStatus: flightStatus,
+        timeStatus: timeStatus
+      });
+      messagePickupRequest(pickup);
     });
   });
 });
+
+function messagePickupRequest(pickup) {
+  var traveller = pickup.name;
+  var pickuper = pickup.namePickuper;
+  var email = pickup.emailPickuper;
+  text = "Hey " + pickuper + ",/n" + traveller + " would love to be picked up by you from " + pickup.airportArrival +
+    " at " + pickup.estimatedArrival + " (" + pickup.timeStatus + "). Don't worry we will inform you if " + traveller +
+    "s flight is delayed. Please confirm that you will pick " +
+    traveller + " up! /n http://pickmeapp.herokuapp.com/confirm/" + pickup._id +
+    "  http://pickmeapp.herokuapp.com/cancel/" + pickup._id + "";
+  html = "<p>Hey " + pickuper + ",<br /><br />" + traveller + " would love to be picked up by you from " + pickup.airportArrival +
+    " at " + pickup.estimatedArrival + " (" + pickup.timeStatus + "). Don't worry we will inform you if " + traveller +
+    "s flight is delayed. Please confirm that you will pick " +
+    traveller + " up! </p> <p> <a href='http://pickmeapp.herokuapp.com/confirm/" + pickup._id +
+    "'>Yes, I will Pick-Him-App</a><br /> <a href='http://pickmeapp.herokuapp.com/cancel/" + pickup._id +
+    "'>No, I won't Pick-Him-App</a></p>";
+
+
+  sendMessage(email, 'New Pick-Me-App request', text, html);
+
+}
 
 function fetchFlightInformation(pickup, cb) {
   // https://api.lufthansa.com/v1/operations/flightstatus/LH400/2014-12-13?api_key=jqxbqfdtamqay85qddzp98m6
