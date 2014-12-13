@@ -1,0 +1,10 @@
+extends layout
+
+block content
+  h1= title
+  ul
+    li #{pickup.carrier} #{pickup.flightnumber}
+    li #{pickup.name}
+    li #{pickup.airportArrival}
+    li #{pickup.estimatedArrival}
+    li #{pickup.flightStatus}

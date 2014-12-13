@@ -55,25 +55,25 @@ var RELEASE = '1.0.20141212';
  * @author Sven Piller <sven.piller@dlh.de>
  */
 function log(message, level, indicator) {
-  if (!level) {
-    level = 'info';
+    if (!level) {
+      level = 'info';
+    }
+    if (!indicator) {
+      indicator = '[SERVER]';
+    }
+    logger(message, level, indicator);
   }
-  if (!indicator) {
-    indicator = '[SERVER]';
-  }
-  logger(message, level, indicator);
-}
-//CORS middleware
+  //CORS middleware
 var allowCrossDomain = function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
-  next();
-}
-/**
- * string for server URL
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    next();
+  }
+  /**
+   * string for server URL
 
- * @type {String}
- */
+   * @type {String}
+   */
 var serverUrl = null;
 /**
  * string for database URL
@@ -238,7 +238,9 @@ router.route('/show/:uid')
 
 // get the flight with that id
 .get(function(req, res) {
-  Pickup.findOne({ 'uid': req.params.uid }, function(err, pickup) {
+  Pickup.findOne({
+    'uid': req.params.uid
+  }, function(err, pickup) {
     if (err) {
       log(err, 'error', '[API]');
       res.send(err);
@@ -253,7 +255,9 @@ router.route('/confirm/:uid')
 
 // get the flight with that id
 .get(function(req, res) {
-  Pickup.findOne({ 'uid': req.params.uid }, function(err, pickup) {
+  Pickup.findOne({
+    'uid': req.params.uid
+  }, function(err, pickup) {
     if (err) {
       log(err, 'error', '[API]');
       res.send(err);
@@ -261,16 +265,21 @@ router.route('/confirm/:uid')
       log(pickup, 'debug', '[API]');
       pickup.confirm = true;
       pickup.save();
-      res.render('confirm.jade', { title: 'Bestätigung', pickup: pickup });
+      res.render('confirm.jade', {
+        title: 'Bestätigung',
+        pickup: pickup
+      });
     }
   });
 })
 
-router.route('/cancel/:uid')
+router.route('/deny/:uid')
 
 // get the flight with that id
 .get(function(req, res) {
-  Pickup.findOne({ 'uid': req.params.uid }, function(err, pickup) {
+  Pickup.findOne({
+    'uid': req.params.uid
+  }, function(err, pickup) {
     if (err) {
       log(err, 'error', '[API]');
       res.send(err);
@@ -278,7 +287,10 @@ router.route('/cancel/:uid')
       log(pickup, 'debug', '[API]');
       pickup.confirm = false;
       pickup.save();
-      res.status(200).json(pickup);
+      res.render('confirm.jade', {
+        title: 'Absage',
+        pickup: pickup
+      });
     }
   });
 })
@@ -390,7 +402,9 @@ routerPublic.get('/show', function(req, res) {
       res.send(err);
     } else {
       log(pickup, 'debug', '[API]');
-      res.render('show.jade', { pickup: pickup });
+      res.render('show.jade', {
+        pickup: pickup
+      });
     }
   });
 });
@@ -407,7 +421,6 @@ routerDoc.get('/doc', function(req, res) {
 
 // apply the routes to our application
 app.use('/', routerDoc);
-
 
 
 
