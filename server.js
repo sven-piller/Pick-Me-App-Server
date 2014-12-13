@@ -261,7 +261,7 @@ router.route('/pickup')
       pickup.timeStatus = timeStatus;
       pickup.save();
 
-      res.status(200).json({
+      res.status(200).json({"data": {
         message: 'Pickup request created!',
         id: pickup._id,
         status: 'OK',
@@ -271,7 +271,7 @@ router.route('/pickup')
         estimatedArrival: estimatedArrival,
         flightStatus: flightStatus,
         timeStatus: timeStatus
-      });
+      }});
       messagePickupRequest(pickup);
     });
   });
