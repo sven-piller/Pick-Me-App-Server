@@ -146,7 +146,7 @@ function performRequest(endpoint, method, data, success) {
     });
 
     res.on('end', function() {
-      logger(JSON.stringify(responseString), 'info', '[API Call]');
+      logger(JSON.stringify(responseString), 'debug', '[API Call]');
       var responseObject = JSON.parse(responseString);
       success(responseObject);
     });
@@ -211,6 +211,14 @@ router.route('/pickup')
         var estimatedArrival = arrival.RevisedTimeUTC.DateTime.$;
         var flightStatus = infos.FlightStatusResource.FlightGroup.Flight.FlightStatus[0].Definition.$;
         var timeStatus = infos.FlightStatusResource.FlightGroup.Flight.TimeStatus[0].Definition.$;
+
+        pickup.aiportArrival = aiportArrival;
+        pickup.scheduleArrival = scheduleArrival;
+        pickup.estimatedArrival = estimatedArrival;
+        pickup.flightStatus = flightStatus;
+        pickup.timeStatus = timeStatus;
+        pickup.save();
+
         res.json({
           message: 'Pickup request created!',
           id: pickup._id,
