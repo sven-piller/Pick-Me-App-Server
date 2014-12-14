@@ -1,11 +1,16 @@
 extends layout
 
 block content
-  h1= title
-  ul
-    li #{pickup.carrier} #{pickup.flightnumber}
-    li #{pickup.name}
-    li #{pickup.airportArrival}
-    li #{pickup.estimatedArrival}
-    li #{pickup.flightStatus}
-    li #{pickup.message}
+  div(style="text-align:center;background-image:url(../../image/Hug.png);background-position:50%;")
+    img(src="/image/Pickmeapp_blank.png")
+    h1= title
+    ul
+      li #{pickup.carrier} #{pickup.flightnumber}
+      li #{pickup.name}
+      li #{pickup.airportArrival}
+      li #{pickup.estimatedArrival}
+      li #{pickup.flightStatus}
+      li #{pickup.message}
+    br
+    br
+    br

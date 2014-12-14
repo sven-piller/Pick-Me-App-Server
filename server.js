@@ -56,20 +56,20 @@ var RELEASE = '1.0.20141212';
  * @author Sven Piller <sven.piller@dlh.de>
  */
 function log(message, level, indicator) {
-    if (!level) {
-      level = 'info';
-    }
-    if (!indicator) {
-      indicator = '[SERVER]';
-    }
-    logger(message, level, indicator);
+  if (!level) {
+    level = 'info';
   }
+  if (!indicator) {
+    indicator = '[SERVER]';
+  }
+  logger(message, level, indicator);
+}
 
-  /**
-   * string for server URL
+/**
+ * string for server URL
 
-   * @type {String}
-   */
+ * @type {String}
+ */
 var serverUrl = null;
 /**
  * string for database URL
@@ -220,7 +220,7 @@ var allowCrossDomain = function(req, res, next) {
 app.use(allowCrossDomain);
 //app.use(express.static(__dirname + '/'));
 //app.use(express.static(__dirname + '/doc'));
-//app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/public'));
 
 // ROUTES FOR OUR API
 // =============================================================================

@@ -1,38 +1,43 @@
 extends layout
 
 block content
-  h1= title
-  p Einführender Text der noch zu füllen ist mit Inhalt
-  table
-    tr
-      td
-        label Abholer
-      td
-        input(value='#{pickup.namePickuper}')
-    tr
-      td
-        label Bestätigt
-      td
-        input(value='#{pickup.confirm}')
-    tr
-      td
-        label Geplante Ankunft
-      td
-        input(value='#{pickup.scheduleArrival}')
-    tr
-      td
-        label Voraussichtliche Ankunft
-      td
-        input(value='#{pickup.estimatedArrival}')
-    tr
-      td
-        label Flugstatus
-      td
-        input(value='#{pickup.flightStatus}')
-    tr
-      td
-        label Zeitstatus
-      td
-        input(value='#{pickup.timeStatus}')
-  hr
-  p #{pickup}
+  div(style="text-align:center;background-image:url(../image/Hug.png);background-position:50%;")
+    img(src="/image/Pickmeapp_blank.png")
+    center
+      h1= title
+      p Einführender Text der noch zu füllen ist mit Inhalt
+      table
+        tr
+          td
+            label Abholer
+          td
+            input(value='#{pickup.namePickuper}')
+        tr
+          td
+            label Bestätigt
+          td
+            input(value='#{pickup.confirm}')
+        tr
+          td
+            label Geplante Ankunft
+          td
+            input(value='#{pickup.scheduleArrival}')
+        tr
+          td
+            label Voraussichtliche Ankunft
+          td
+            input(value='#{pickup.estimatedArrival}')
+        tr
+          td
+            label Flugstatus
+          td
+            input(value='#{pickup.flightStatus}')
+        tr
+          td
+            label Zeitstatus
+          td
+            input(value='#{pickup.timeStatus}')
+    br
+    br
+    br
+    br

@@ -1,0 +1,8 @@
+/* Empty. Add your own CSS if you like */
+.tabs .tab-item .icon.mcfly {
+  background-repeat: no-repeat;
+  background-position: 50%;
+  height: 40%;
+  background-image: url('../img/iconmonstr.png');
+  background-size:contain;
+}
