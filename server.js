@@ -444,15 +444,18 @@ routerPublic.get('/', function(req, res) {
 });
 
 // about page route (http://localhost:8080/about)
-routerPublic.get('/show', function(req, res) {
-  Pickup.findOne(null, function(err, pickup) {
+routerPublic.get('/show/:uid', function(req, res) {
+  Pickup.findOne({
+    'uid': req.params.uid
+  }, function(err, pickup) {
     if (err) {
       log(err, 'error', '[API]');
       res.send(err);
     } else {
       log(pickup, 'debug', '[API]');
       res.render('show.jade', {
-        pickup: pickup
+        title: "Request Reisender",
+        pickup: pickup,
       });
     }
   });
