@@ -5,8 +5,8 @@ var LocationSchema = new mongoose.Schema({
   letter: String,
   area: String,
   number: String,
-  alt: String,
-  long: String,
+  lng: String,
+  lat: String,
   pickup: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Pickup'
